@@ -1,0 +1,42 @@
+---
+title: "Lab 1 inciso 2 md"
+author: 'Ximena'
+output: rmarkdown::github_document
+---
+
+## Introduccion
+
+En este documento, se utilizará la funcion `lapply` para encontrar la moda de cada vector en una lista de vectores aleatorios. La moda es el valor que aparece con mayor frecuencia en un conjunto de datos.
+
+## Crear una lista de vectores aleatorios
+
+```{r}
+vectores <- list(
+  sample(1:10, 15, replace = TRUE),
+  sample(1:20, 20, replace = TRUE),
+  sample(1:30, 25, replace = TRUE)
+)
+
+```
+
+## Ver los vectores generados
+```{r}
+vectores
+```
+
+## Funcion de moda
+```{r}
+# Funcion para encontrar la moda de un vector
+find_mode <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+# Aplicar la funcion find_mode a los vectores
+modas <- lapply(vectores, find_mode)
+
+# Ver resultados
+modas
+```
+
+

@@ -1,0 +1,74 @@
+---
+title: "Lab 1 inciso 1 md"
+author: 'Ximena'
+output: rmarkdown::github_document
+---
+
+## Carga de librerias
+```{r setup, include=TRUE}
+library(readxl)
+library(openxlsx)
+library(writexl)
+library(dplyr)
+```
+
+## Carga de archivos
+```{r}
+leer_excel1 <- read.xlsx('01-2023.xlsx')
+leer_excel2 <- read.xlsx('02-2023.xlsx')
+leer_excel3 <- read.xlsx('03-2023.xlsx')
+leer_excel4 <- read.xlsx('04-2023.xlsx')
+leer_excel5 <- read.xlsx('05-2023.xlsx')
+leer_excel6 <- read.xlsx('06-2023.xlsx')
+leer_excel7 <- read.xlsx('07-2023.xlsx')
+leer_excel8 <- read.xlsx('08-2023.xlsx')
+leer_excel9 <- read.xlsx('09-2023.xlsx')
+leer_excel10 <- read.xlsx('10-2023.xlsx')
+leer_excel11 <- read.xlsx('11-2023.xlsx')
+
+```
+
+## Eliminar columnas innecesarias
+```{r}
+leer_excel7 <- leer_excel7[,1:8]
+leer_excel8 <- leer_excel8[,1:8]
+leer_excel9 <- leer_excel9[,1:8]
+leer_excel10 <- leer_excel10[,1:8]
+leer_excel11 <- leer_excel11[,1:8]
+```
+
+## Crear fechas
+```{r}
+leer_excel1$Fecha <- '01-2023'
+leer_excel2$Fecha <- '02-2023'
+leer_excel3$Fecha <- '03-2023'
+leer_excel4$Fecha <- '04-2023'
+leer_excel5$Fecha <- '05-2023'
+leer_excel6$Fecha <- '06-2023'
+leer_excel7$Fecha <- '07-2023'
+leer_excel8$Fecha <- '08-2023'
+leer_excel9$Fecha <- '09-2023'
+leer_excel10$Fecha <- '10-2023'
+leer_excel11$Fecha <- '11-2023'
+```
+
+## Unir los dataframes
+```{r}
+df_completo <- bind_rows(leer_excel1, leer_excel2, leer_excel3, leer_excel4, leer_excel5, leer_excel6, leer_excel7, leer_excel8, leer_excel9, leer_excel10, leer_excel11)
+```
+
+## Preview dataframe
+```{r}
+head(df_completo)
+```
+
+## Exportar el dataframe a Excel
+```{r}
+write_xlsx(df_completo, 'excel_exportado.xlsx')
+```
+
+
+
+
+
+

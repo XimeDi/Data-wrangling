@@ -1,0 +1,17 @@
+---
+title: "Lab 1 inciso 3 md"
+author: 'Ximena'
+output: rmarkdown::github_document
+---
+
+## Leer el archivo
+```{r}
+library(readr)
+
+# Leer el archivo de datos
+archivo <- read_delim("INE_PARQUE_VEHICULAR_080219.txt", delim = "|")  #delimitador según el archivo
+
+# Ver las primeras filas del dataframe
+head(archivo)
+```
+
