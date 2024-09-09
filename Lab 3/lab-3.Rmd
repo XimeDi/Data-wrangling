@@ -1,0 +1,132 @@
+---
+title: "Análisis de IMDB con dplyr"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: scroll
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(dplyr)
+library(readr)
+library(ggplot2)
+
+actors <- read_csv("actors.csv")
+movies <- read_csv("movies.csv")
+directors <- read_csv("directors.csv")
+directors_genres <- read_csv("directors_genres.csv")
+roles <- read_csv("roles.csv")
+movies_genres <- read_csv("movies_genres.csv")
+movies_directors <- read_csv("movies_directors.csv")
+```
+
+
+-----------------------------------------------------------------------
+
+## Información General sobre la base de datos
+
+
+### ¿Cuántas películas existen en la base de datos?
+```{r}
+num_peliculas <- movies %>% 
+  summarise(total_peliculas = n())
+
+num_peliculas
+```
+
+### ¿Cuántos directores existen en la base de datos?
+```{r}
+num_directores <- directors %>% 
+  summarise(total_directores = n())
+
+num_directores
+```
+
+
+-----------------------------------------------------------------------
+
+## ¿Cuál es el número promedio de géneros por director?
+
+```{r}
+prom_generos_director <- directors_genres %>%
+  group_by(director_id) %>%
+  summarise(num_generos = n_distinct(genre)) %>%
+  summarise(promedio_generos = mean(num_generos))
+prom_generos_director
+```
+
+
+-----------------------------------------------------------------------
+
+## Reporte por "Role"
+
+### Número de películas
+
+```{r}
+reporte_role <- roles %>%
+  left_join(actors, by = c("actor_id" = "id")) %>%
+  group_by(role) %>%
+  summarize(
+    num_peliculas = n_distinct(movie_id),
+    num_actores = sum(gender == "M", na.rm = TRUE),
+    num_actrices = sum(gender == "F", na.rm = TRUE),
+    num_directores = n_distinct(movies_directors$director_id)
+  )
+
+reporte_role
+
+```
+
+-----------------------------------------------------------------------
+
+## Reporte por Director
+
+```{r}
+reporte_directores <- movies_directors %>%
+  left_join(directors, by = c("director_id" = "id")) %>%
+  left_join(movies, by = c("movie_id" = "id")) %>%
+  left_join(roles, by = c("movie_id" = "movie_id")) %>%
+  left_join(movies_genres, by = c("movie_id" = "movie_id")) %>%
+  group_by(director_id, first_name, last_name) %>%
+  summarize(
+    num_peliculas = n_distinct(movie_id),
+    num_actores = n_distinct(actor_id),
+    genero_mas_comun = names(which.max(table(genre)))
+  )
+
+reporte_directores
+```
+
+
+-----------------------------------------------------------------------
+
+## Distribución de Roles
+
+### Por Película
+
+```{r}
+distribucion_roles_pelicula <- roles %>%
+  group_by(movie_id) %>%
+  summarize(num_roles = n()) 
+
+ggplot(distribucion_roles_pelicula, aes(x = num_roles)) +
+  geom_histogram(binwidth = 1, fill = "blue", color = "black") +
+  labs(title = "Distribución de Roles por Película", x = "Número de Roles", y = "Frecuencia")
+```
+
+### Por Director
+
+```{r}
+distribucion_roles_director <- roles %>%
+  left_join(movies_directors, by = "movie_id") %>%
+  group_by(director_id) %>%
+  summarize(num_roles = n()) 
+
+ggplot(distribucion_roles_director, aes(x = num_roles)) +
+  geom_histogram(binwidth = 1, fill = "green", color = "black") +
+  labs(title = "Distribución de Roles por Director", x = "Número de Roles", y = "Frecuencia")
+```
+
+
+
